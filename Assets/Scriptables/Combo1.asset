@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 614bbf53774498946b3b8adc52497aa2, type: 3}
   m_Name: Combo1
   m_EditorClassIdentifier: 
-  Combination: 000000000100000002000000
+  Name: 1
+  Combination: 0000000001000000

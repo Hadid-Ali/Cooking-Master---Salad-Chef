@@ -12,21 +12,24 @@ public static class Timer
 
     private static IEnumerator Execute(Action delayedAction, Action<float> repeatedAction, float delay)
     {
-        float startTime = Time.time;
-        
-        
-        while (true)
-        {
-            float elapsedTime = Time.time - startTime;
-            repeatedAction?.Invoke(elapsedTime);
-            yield return new WaitForSeconds(0.1f);
+        float timeLeft = delay;
+        float lastUpdateTime = timeLeft;
 
-            if (elapsedTime >= delay)
+        while (timeLeft > 0f)
+        {
+            yield return null; 
+            
+            timeLeft -= Time.deltaTime;
+            
+            if (Mathf.Abs(timeLeft - lastUpdateTime) > 0.1f)// To reduce number of callbacks
             {
-                delayedAction?.Invoke();
-                break;
+                repeatedAction?.Invoke(timeLeft);
+                lastUpdateTime = timeLeft;
             }
+            repeatedAction?.Invoke(timeLeft);
         }
+        delayedAction?.Invoke();   
+
     }
     
 

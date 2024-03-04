@@ -8,45 +8,54 @@ using UnityEngine.UI;
 
 public class SaladMachine : MonoBehaviour, IInteractable<SaladMachine>
 {
-    [SerializeField] private Container _container;
+    [SerializeField] private PlayerInteraction Owner;
+    [FormerlySerializedAs("_container")] [SerializeField] private ThingContainer thingContainer;
 
-    [SerializeField] private Combination currentCombination;
     [SerializeField] private float timeToChop;
 
     [SerializeField] private TextMesh text;
-    [SerializeField] private TextMesh text2;
 
-    private bool IsChopping;
-    private bool IsEmpty;
+    [SerializeField] private Combination _currentCombination;
+
+    private bool _isChopping;
+
+    private VegetableName _currentVegName;
+    private Action _onComplete;
 
     private void Start()
     {
-        currentCombination = _container.gameObject.AddComponent<Combination>();
+        _currentCombination = gameObject.AddComponent<Combination>();
     }
 
-    public void OnUpdateTimer(float time)
+    private void OnUpdateTimer(float time)
     {
         text.text = time.ToString("F1");
     }
-    public void OnChopComplete(VegetableName veg)
+    private void OnChopComplete()
     {
-        IsChopping = false;
+        _isChopping = false;
         text.text = "0";
-        currentCombination.Ingrediants.Add(veg);
-        currentCombination.CombinationName  =  MetaDataUtility.CheckCombination(currentCombination.Ingrediants);
+        _currentCombination.Ingrediants.Add(_currentVegName);
+        _currentCombination.CombinationName  =  MetaDataUtility.CheckCombination(_currentCombination.Ingrediants);
         
-        text2.text = currentCombination.CombinationName.ToString();
-        _container.Push(currentCombination, OnSaladTaken);
+
+        thingContainer.Push(_currentCombination, OnSaladTaken);
+        
+        _onComplete.Invoke();
     }
 
-    public void OnSaladTaken(Thing thing, int uselessHere)
+    private void OnSaladTaken(Thing thing, int uselessHere)
     {
-        currentCombination.CombinationName = CombinationName.None;
-        currentCombination.Ingrediants.Clear();
-
-        text2.text = currentCombination.CombinationName.ToString();
+        _currentCombination.CombinationName = CombinationName.None;
+        _currentCombination.Ingrediants.Clear();
+        
     }
-    
+
+    public bool AllowsInteraction(PlayerInteraction controller)
+    {
+        return Owner == controller;
+    }
+
     public void OnInteract()
     {
         
@@ -57,14 +66,22 @@ public class SaladMachine : MonoBehaviour, IInteractable<SaladMachine>
         
     }
 
-    public void OnInteract(Vegetable veg)
+    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action onComplete)
     {
-        if(IsChopping)
+        if(_isChopping || Owner != controller)
             return;
         
-        IsChopping = true;
+        this._onComplete += onComplete;
         
-        Timer.CreateTimerObject(()=> OnChopComplete(veg.VegetableName), OnUpdateTimer, timeToChop);
+        _isChopping = true;
+
+        _currentVegName = veg.vegetableName;
+        Timer.CreateTimerObject(OnChopComplete, OnUpdateTimer, timeToChop);
         print("Worked");
+    }
+
+    public void OnInteract(PlayerInteraction controller, CombinationName veg)
+    {
+        
     }
 }

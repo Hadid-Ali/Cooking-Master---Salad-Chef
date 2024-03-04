@@ -21,7 +21,7 @@ public class CameraPaningSystem : MonoBehaviour
         
         float distanceBetweenPlayers = Vector3.Distance(player1.position, player2.position);
         float desiredDistance = Mathf.Clamp(distanceBetweenPlayers, minDistance, maxDistance);
-        Vector3 targetPosition = initialPosition + (Vector3.back * desiredDistance) + (Vector3.up * desiredDistance/3);
+        Vector3 targetPosition = initialPosition + /*(Vector3.back * desiredDistance)*/  (Vector3.up * desiredDistance);
         transform.position = Vector3.Lerp(transform.position, targetPosition, panSpeed * Time.deltaTime);
     }
 

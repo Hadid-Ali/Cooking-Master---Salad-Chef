@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     {
         if (m_move != Vector3.zero) gameObject.transform.forward = m_move;
         
+        m_Controller.Move(Vector3.down);
         m_Controller.Move(m_move * Time.deltaTime * playerSpeed);
     }
 

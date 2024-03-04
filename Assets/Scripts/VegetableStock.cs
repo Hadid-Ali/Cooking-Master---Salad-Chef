@@ -9,10 +9,9 @@ using Random = UnityEngine.Random;
 
 public class VegetableStock : Inventory
 {
-    [SerializeField] private Container[] containers;
-    [SerializeField] private GameObject prefab;
+    [SerializeField] private ThingContainer[] containers;
 
-    private Dictionary<Container, Thing> Stock = new Dictionary<Container, Thing>();
+    private Dictionary<ThingContainer, Thing> Stock = new Dictionary<ThingContainer, Thing>();
     private int currentContainer;
 
     protected override void Start()
@@ -34,23 +33,16 @@ public class VegetableStock : Inventory
     {
         int randomNumber = Random.Range(0, 10);
         
-        Transform spawnParent = containers[containerIndex].transform.GetChild(0);
+        Destroy(transform.GetComponent<Thing>());
         
-        GameObject obj =  Instantiate(prefab, spawnParent.position, Quaternion.identity);
-        obj.transform.SetParent(spawnParent);
-        Vegetable veg = obj.GetComponent<Vegetable>();
-            
-        VegetableName name = (VegetableName) randomNumber;
-        veg.VegetableName = name;
-
-        TextMesh text = veg.gameObject.GetComponentInChildren<TextMesh>();
-        text.text = name.ToString();
+        Vegetable veg = containers[containerIndex].gameObject.AddComponent<Vegetable>();
+        veg.vegetableName = (VegetableName) randomNumber;
         
-        
+        containers[containerIndex].Push(veg, OnItemRemoved);
         AddThing(veg);
     }
 
-    public override void AddThing(Thing thing)
+    protected override void AddThing(Thing thing)
     {
         base.AddThing(thing);
 

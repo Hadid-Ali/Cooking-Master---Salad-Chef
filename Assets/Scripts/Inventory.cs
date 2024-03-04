@@ -5,18 +5,19 @@ using UnityEngine;
 
 
 public class Inventory : MonoBehaviour
-{
-    [field: SerializeField] public virtual List<Thing> Things {private set; get;}
+{ 
+    [field: SerializeField] protected virtual List<Thing> Things {private set; get;}
     [field: SerializeField] public int Capacity {private set; get;}
 
     public bool IsAtCapacity => Things.Count >= Capacity;
+    public bool IsEmpty => Things.Count <= 0;
 
 
     protected virtual void Start()
     {
         Things = new List<Thing>();
     }
-    public virtual void AddThing(Thing thing)
+    protected virtual void AddThing(Thing thing)
     {
         if(Things.Count >= Capacity)
             return;

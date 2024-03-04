@@ -10,12 +10,7 @@ public class CharacterInput : MonoBehaviour
     private event Action OnInteractE;
     public InputBinding map;
 
-    private void Awake()
-    {
-
-
-    }
-
+    private bool _isInputPaused;
     public void Initialize(Action<Vector2> OnMove, Action OnInteract)
     {
         OnMoveE += OnMove ;
@@ -29,13 +24,22 @@ public class CharacterInput : MonoBehaviour
     }
     public void OnMovement(InputAction.CallbackContext context)
     {
+        if(_isInputPaused)
+            return;
+        
         Vector2 move = context.ReadValue<Vector2>();
         OnMoveE?.Invoke(move);
     }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
+        if(_isInputPaused)
+            return;
+        
         if(context.action.triggered)
             OnInteractE?.Invoke();
     }
+
+    public void PauseInput() => _isInputPaused = true;
+    public void ContinueInput() => _isInputPaused = false;
 }
