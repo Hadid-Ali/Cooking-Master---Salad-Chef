@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   powerUpPercentage: 30
   vegetableTotalNumber: 5
-  playerLiveTime: 20
+  playerLiveTime: 200
   timeForEachIngredient: 30
   TimeToChop: 3
   customerLeaveScoreSubtractAmount: 20
