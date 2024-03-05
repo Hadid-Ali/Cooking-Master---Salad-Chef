@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Customer : MonoBehaviour, IInteractable<Customer>
 {
@@ -16,25 +18,29 @@ public class Customer : MonoBehaviour, IInteractable<Customer>
     
     private Action<Customer> OnCustomerOrderComplete;
     
-    private float currentTime;
+    private float _currentTime;
+    private float _waitTime;
     private bool _isAngry;
     
 
     public void Order(CombinationName c, float time, Action<Customer> onCustomerOrderComplete)
     {
-        requiredCombinationName = c;
+        gameObject.SetActive(true);
         
+        requiredCombinationName = c;
         OnCustomerOrderComplete = onCustomerOrderComplete;
         customerState = CustomerState.Waiting;
-        Timer.CreateTimerObject(OnTimerComplete, OnTimerTick, time);
+
+        _waitTime = time;
+        Timer.Instance.StartTimer(OnTimerComplete, OnTimerTick, time);
     }
 
     
     IEnumerator  OnOrderServed()
     {
-        text.SetText($"{customerState}");
+        text.SetText($"{requiredCombinationName} : {customerState}");
+        
         yield return new WaitForSeconds(2);
-        customerState = CustomerState.Gone;
         OnCustomerOrderComplete.Invoke(this);
     }
 
@@ -43,17 +49,17 @@ public class Customer : MonoBehaviour, IInteractable<Customer>
         if(customerState != CustomerState.Waiting)
             return;
         
-        print("Time Ticking");
+        _currentTime = obj;
         
-        currentTime = obj;
-        
-        text.SetText($"{customerState} : {currentTime:F1}");
-        timerImage.fillAmount = currentTime / 60;
+        text.SetText($"{requiredCombinationName} : {customerState}");
+        timerImage.fillAmount = _currentTime / 60;
     }
 
     private void OnTimerComplete()
     {
-        customerState = CustomerState.Gone;
+        OnCustomerOrderComplete.Invoke(this);
+        
+        PlayerScore.OnScoreSubAll?.Invoke(MetaDataUtility.metaData.customerLeaveScoreSubtractAmount);
     }
 
     private void EvaluateOrder(PlayerInteraction interaction,CombinationName combinationName)
@@ -61,16 +67,25 @@ public class Customer : MonoBehaviour, IInteractable<Customer>
         if (requiredCombinationName == combinationName)
         {
             customerState =  CustomerState.Served ;
+            
+            if ((_currentTime / _waitTime * 100) >= MetaDataUtility.metaData.powerUpPercentage)
+            {
+                SpawnPowerUp();
+            }
+            
             PlayerScore.OnScoreAdd?.Invoke(interaction, 30);
+            print("Right Combo");
         }
         else if(!_isAngry) 
         {
             _isAngry = true;
             PlayerScore.OnScoreSub?.Invoke(interaction, 10);
+            print("Wrong Combo");
         }
         else
         {
             PlayerScore.OnScoreSub?.Invoke(interaction, 30);
+            print("Wrong Combo Angry");
         }
         
         if(customerState == CustomerState.Served)
@@ -82,9 +97,22 @@ public class Customer : MonoBehaviour, IInteractable<Customer>
         return customerState == CustomerState.Waiting ;
     }
 
-    public void OnInteract()
+    private void SpawnPowerUp()
     {
+        int random = Random.Range(-2, 2);
+        Vector3 randomPosition =  new Vector3(random, 0, random);
+        GameObject gameObject = Instantiate(Resources.Load<GameObject>("Box"), randomPosition, Quaternion.identity);
+        int random2 = Random.Range(0, 3);
         
+        gameObject.AddComponent<PowerUp>().type = (PowerupType) random2;
+        gameObject.AddComponent<BoxCollider>().isTrigger = true;
+        gameObject.GetComponentInChildren<TextMeshProUGUI>().SetText($"{(PowerupType) random2}");
+        
+        print("Power Up Spawned");
+    }
+    public PowerupType OnInteract() 
+    {
+        return PowerupType.AddScore;
     }
 
     public void OnInteract(PlayerInteraction controller)

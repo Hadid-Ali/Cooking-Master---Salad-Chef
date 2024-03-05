@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,7 +12,7 @@ public class PlayerInventory : Inventory
     [SerializeField] private Transform stackStart;
 
     [SerializeField] private GameObject visualbox;
-     private Dictionary<int,Transform> positions = new Dictionary<int,Transform>();
+     private Dictionary<Thing,Transform> positions = new Dictionary<Thing,Transform>();
     
     private void Awake()
     {
@@ -37,30 +38,29 @@ public class PlayerInventory : Inventory
         if(Things.Count >= Capacity)
             return;
         
-        if (positions.Count < 2)
+        if (positions.ContainsKey(thing))
+        {
+             positions[thing].gameObject.SetActive(true);
+        }
+        else
         {
             Transform t = Instantiate(visualbox, stackStart.position + (Vector3.up * Things.Count),
                 Quaternion.identity).transform;
 
-            if (positions.Count > 0)
-            {
-                if(!positions.ContainsKey(Things.Count))
-                    positions.Add(Things.Count, t);
-            }
-            
-            positions[Things.Count] = t;
-            positions[Things.Count].transform.SetParent(stackStart);
+            positions.Add(thing, t);
+            positions[thing].transform.SetParent(stackStart);
         }
-        
+
         base.AddThing(thing);
         
-        positions[Things.Count].gameObject.SetActive(true);
-        positions[Things.Count].GetComponentInChildren<TextMesh>().text = thing.Name();
+        positions[thing].GetComponentInChildren<TextMeshProUGUI>().text = thing.Name();
     }
 
     public override void RemoveThing(Thing thing)
     {
-        positions[Things.Count].gameObject.SetActive(false);
+        if (positions.ContainsKey(thing))
+            positions[thing].gameObject.SetActive(false);
+        
         base.RemoveThing(thing);
     }
 
@@ -68,16 +68,16 @@ public class PlayerInventory : Inventory
 
     public Vegetable GetTopVegetable()
     {
-        for (int i = 0; i < Things.Count; i++)
+        foreach (var t in Things)
         {
-            if (Things[i].type != 1)
-                return null;
+            if (t.type != 1)
+                continue;
             
-            Vegetable veg = Things[i].GetItem<Vegetable>();
+            Vegetable veg = t.GetItem<Vegetable>();
             
             return veg;
         }
-        
+
         return null;
     }
 
@@ -86,7 +86,7 @@ public class PlayerInventory : Inventory
         for (int i = 0; i < Things.Count; i++)
         {
             if (Things[i].type != 2)
-                return null;
+                continue;
             
             Combination veg = Things[i].GetItem<Combination>();
             

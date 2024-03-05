@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -44,8 +45,30 @@ public class ThingContainer : MonoBehaviour, IInteractable<ThingContainer>
         if(isNotPersistant)
             obj.SetActive(true);
         
-        obj.GetComponentInChildren<TextMesh>().text = thing.Name();
+        obj.GetComponentInChildren<TextMeshProUGUI>().SetText(thing.Name());
     }
+
+    public void Push(Thing thing, Action<Thing, int> onItemRemoved, Combination combo)
+    {
+        _thing = thing;
+        
+        _cachedAction = onItemRemoved;
+        _onItemRemoved.Register(_cachedAction);
+
+        if (!HasObject)
+            obj =  Instantiate(visualObjectPrefab, spawnPoint.position, Quaternion.identity);
+        
+        if(isNotPersistant)
+            obj.SetActive(true);
+        
+        Combination comb = obj.AddComponent<Combination>();
+        comb.Ingrediants = combo.Ingrediants;
+        comb.CombinationName = combo.CombinationName;
+
+        _thing = comb;
+        obj.GetComponentInChildren<TextMeshProUGUI>().SetText(thing.Name());
+    }
+    
     
     public void OnInteract(PlayerInteraction controller)
     {
@@ -82,8 +105,8 @@ public class ThingContainer : MonoBehaviour, IInteractable<ThingContainer>
         return contains;
     }
 
-    public void OnInteract()
+    public PowerupType OnInteract()
     {
-        //Useless
+        return PowerupType.AddScore;
     }
 }

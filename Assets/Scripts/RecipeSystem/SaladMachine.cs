@@ -10,10 +10,8 @@ public class SaladMachine : MonoBehaviour, IInteractable<SaladMachine>
 {
     [SerializeField] private PlayerInteraction Owner;
     [FormerlySerializedAs("_container")] [SerializeField] private ThingContainer thingContainer;
-
-    [SerializeField] private float timeToChop;
-
-    [SerializeField] private TextMesh text;
+    
+    [SerializeField] private Image _image;
 
     [SerializeField] private Combination _currentCombination;
 
@@ -29,17 +27,19 @@ public class SaladMachine : MonoBehaviour, IInteractable<SaladMachine>
 
     private void OnUpdateTimer(float time)
     {
-        text.text = time.ToString("F1");
+        _image.fillAmount = time / MetaDataUtility.metaData.TimeToChop;
     }
     private void OnChopComplete()
     {
         _isChopping = false;
-        text.text = "0";
+        
+        _image.fillAmount = 0;
+        
         _currentCombination.Ingrediants.Add(_currentVegName);
         _currentCombination.CombinationName  =  MetaDataUtility.CheckCombination(_currentCombination.Ingrediants);
         
 
-        thingContainer.Push(_currentCombination, OnSaladTaken);
+        thingContainer.Push(_currentCombination, OnSaladTaken, _currentCombination);
         
         _onComplete.Invoke();
     }
@@ -56,9 +56,9 @@ public class SaladMachine : MonoBehaviour, IInteractable<SaladMachine>
         return Owner == controller;
     }
 
-    public void OnInteract()
+    public PowerupType OnInteract()
     {
-        
+        return PowerupType.AddScore;
     }
 
     public void OnInteract(PlayerInteraction controller)
@@ -76,8 +76,7 @@ public class SaladMachine : MonoBehaviour, IInteractable<SaladMachine>
         _isChopping = true;
 
         _currentVegName = veg.vegetableName;
-        Timer.CreateTimerObject(OnChopComplete, OnUpdateTimer, timeToChop);
-        print("Worked");
+        Timer.Instance.StartTimer(OnChopComplete, OnUpdateTimer, MetaDataUtility.metaData.TimeToChop);
     }
 
     public void OnInteract(PlayerInteraction controller, CombinationName veg)

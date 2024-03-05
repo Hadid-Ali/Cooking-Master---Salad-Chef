@@ -8,13 +8,17 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerInventory _inventory;
     [SerializeField] private CharacterInput _input;
     [SerializeField] private PlayerScore _playerScore;
+    [SerializeField] private PlayerController _controller;
+    [SerializeField] private PlayerTimer _playerTimer;
     
     private IInteractable<SaladMachine> _saladMachine;
     private IInteractable<ThingContainer> _container;
     private IInteractable<Customer> _customer;
+    private IInteractable<PowerUp> _powerUp;
+    private IInteractable<TrashCan> _trashCan;
     
     
-    private bool CanInteract => _saladMachine != null || _container != null || _customer != null|| _isWaiting;
+    private bool CanInteract => _saladMachine != null || _container != null || _customer != null||_trashCan != null || _powerUp != null ||_isWaiting;
     private bool _isWaiting;
     
     private Vegetable _veg;
@@ -30,6 +34,13 @@ public class PlayerInteraction : MonoBehaviour
         
         else if (other.GetComponent<IInteractable<Customer>>() != null)
             _customer = other.GetComponent<IInteractable<Customer>>();
+
+        else if (other.GetComponent<IInteractable<PowerUp>>() != null)
+            _powerUp = other.GetComponent<IInteractable<PowerUp>>();
+        
+        else if (other.GetComponent<IInteractable<TrashCan>>() != null)
+            _trashCan = other.GetComponent<IInteractable<TrashCan>>();
+        
     }
 
     
@@ -45,6 +56,12 @@ public class PlayerInteraction : MonoBehaviour
         else if (other.GetComponent<IInteractable<Customer>>() != null)
             _customer = null;
         
+        else if (other.GetComponent<IInteractable<PowerUp>>() != null)
+            _powerUp = null;
+        
+        else if (other.GetComponent<IInteractable<TrashCan>>() != null)
+            _trashCan = null;
+        
     }
 
     public void Interact()
@@ -59,7 +76,6 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             
             _container.OnInteract(this);
-            print("Container interaction by player");
         }
         else if (_saladMachine != null && !_inventory.IsEmpty)
         {
@@ -68,14 +84,12 @@ public class PlayerInteraction : MonoBehaviour
                 
             _veg = _inventory.GetTopVegetable();
             
-            print(_veg);
+
             if(_veg == null)
                 return;
             
             _saladMachine.OnInteract(this, _veg, SaladMachineInteractionComplete);
             _input.PauseInput();
-            
-            print($"Salad machine : {_veg}");
         }
         else if (_customer != null && !_inventory.IsEmpty)
         {
@@ -84,7 +98,6 @@ public class PlayerInteraction : MonoBehaviour
             
             _comb = _inventory.GetTopMostCombination();
             
-            print(_comb);
             
             if(_comb == null)
                 return;
@@ -92,8 +105,38 @@ public class PlayerInteraction : MonoBehaviour
             _customer.OnInteract(this, _comb.CombinationName);
             _inventory.RemoveThing(_comb);
         }
+        else if (_powerUp != null)
+        {
+            switch (_powerUp.OnInteract())
+            {
+                case PowerupType.AddScore:
+                    PlayerScore.OnScoreAdd?.Invoke(this, MetaDataUtility.metaData.powerUpAddScore);
+                    break;
+                case PowerupType.TimeIncrease:
+                    _playerTimer.Addtimer(MetaDataUtility.metaData.powerUpAddTime);
+                    break;
+                case PowerupType.MoveSpeed:
+                    _controller.AddSpeed(MetaDataUtility.metaData.powerUpAddSpeed, MetaDataUtility.metaData.powerUpAddSpeedDuration);
+                    break;
+            }
+
+            _powerUp = null;
+        }
+        else if (_trashCan != null)
+        {
+            _trashCan.OnInteract(this);
+            print("Detected");
+        }
 
         StartCoroutine(WaitCoroutine());
+    }
+
+    public void RemoveCombination()
+    {
+        Thing thing = _inventory.GetTopMostCombination();
+            
+        if(thing != null)
+            _inventory.RemoveThing(thing);
     }
     
 

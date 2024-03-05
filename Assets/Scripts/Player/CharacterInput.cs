@@ -40,6 +40,11 @@ public class CharacterInput : MonoBehaviour
             OnInteractE?.Invoke();
     }
 
-    public void PauseInput() => _isInputPaused = true;
+    public void PauseInput()
+    {
+        _isInputPaused = true;
+        OnMoveE?.Invoke(new Vector2(0,0));
+    }
+
     public void ContinueInput() => _isInputPaused = false;
 }

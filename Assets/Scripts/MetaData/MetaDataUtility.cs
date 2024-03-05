@@ -2,15 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MetaDataUtility : MonoBehaviour
 {
-    [SerializeField] private List<CombinationData> Combinations;
-    private static List<CombinationData> combinatonsStatic; 
+    [SerializeField] private List<CombinationData> combinations;
+    [SerializeField] private MetaData metaDataS;
 
-    private void Start()
+    private static List<CombinationData> _staticCombinations;
+    public static MetaData metaData;
+    private void Awake()
     {
-        combinatonsStatic = Combinations;
+        _staticCombinations = combinations;
+        metaData = metaDataS;
         
         DontDestroyOnLoad(this);
         SortLists();
@@ -18,7 +22,7 @@ public class MetaDataUtility : MonoBehaviour
 
     public static void SortLists()
     {
-        foreach (var v in combinatonsStatic)
+        foreach (var v in _staticCombinations)
         {
             v.Combination.Sort();
         }
@@ -27,7 +31,7 @@ public class MetaDataUtility : MonoBehaviour
     public static CombinationName CheckCombination(List<VegetableName> vegetables)
     {
         vegetables.Sort();
-        foreach (var v in combinatonsStatic)
+        foreach (var v in _staticCombinations)
         {
             if (IsSame(v.Combination, vegetables))
                 return v.Name;

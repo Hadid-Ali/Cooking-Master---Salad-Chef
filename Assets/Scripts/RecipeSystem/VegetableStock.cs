@@ -11,8 +11,8 @@ public class VegetableStock : Inventory
 {
     [SerializeField] private ThingContainer[] containers;
 
-    private Dictionary<ThingContainer, Thing> Stock = new Dictionary<ThingContainer, Thing>();
-    private int currentContainer;
+    private readonly Dictionary<ThingContainer, Thing> _stock = new Dictionary<ThingContainer, Thing>();
+    private int _currentContainer;
 
     protected override void Start()
     {
@@ -24,14 +24,14 @@ public class VegetableStock : Inventory
     {
         for (int i = 0; i < Capacity; i++)
         {
-            currentContainer = containers[i].index = i;
+            _currentContainer = containers[i].index = i;
             Populate(i);
         }
     }
 
     private void Populate(int containerIndex)
     {
-        int randomNumber = Random.Range(0, 10);
+        int randomNumber = Random.Range(0, MetaDataUtility.metaData.vegetableTotalNumber);
         
         Destroy(transform.GetComponent<Thing>());
         
@@ -46,21 +46,20 @@ public class VegetableStock : Inventory
     {
         base.AddThing(thing);
 
-        if (!Stock.ContainsKey(containers[currentContainer]))
-            Stock.Add(containers[currentContainer], thing);
+        if (!_stock.ContainsKey(containers[_currentContainer]))
+            _stock.Add(containers[_currentContainer], thing);
         else
-            Stock[containers[currentContainer]] = thing;
+            _stock[containers[_currentContainer]] = thing;
         
-        containers[currentContainer].Push(thing, OnItemRemoved);
+        containers[_currentContainer].Push(thing, OnItemRemoved);
         
     }
-    public void OnItemRemoved(Thing veg, int ContainerIndex)
+    private void OnItemRemoved(Thing veg, int containerIndex)
     {
-        currentContainer = ContainerIndex;
+        _currentContainer = containerIndex;
         
         RemoveThing(veg);
-        Populate(ContainerIndex);
+        Populate(containerIndex);
         
-        print(ContainerIndex);
     }
 }

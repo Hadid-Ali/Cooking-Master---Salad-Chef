@@ -32,7 +32,7 @@ public class CustomerHandler : MonoBehaviour
 
     private void PlaceOrder(Customer customer)
     {
-        int randomCombination = Random.Range(1, 2);
+        int randomCombination = Random.Range(1, 4);
         CombinationName comboname = (CombinationName) randomCombination;
         
         customer.Order(comboname, 60f, OnCustomerOrderComplete);
