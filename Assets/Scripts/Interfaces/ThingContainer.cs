@@ -18,7 +18,7 @@ public class ThingContainer : MonoBehaviour, IInteractable<ThingContainer>
     public int index;
 
 
-    [SerializeField] private Thing _thing;
+    [SerializeField] private Thing thing;
     private bool HasObject => obj != null;
     public bool isNotPersistant;
     
@@ -34,7 +34,7 @@ public class ThingContainer : MonoBehaviour, IInteractable<ThingContainer>
 
     public void Push(Thing thing, Action<Thing, int> onItemRemoved)
     {
-        _thing = thing;
+        this.thing = thing;
         
         _cachedAction = onItemRemoved;
         _onItemRemoved.Register(_cachedAction);
@@ -50,7 +50,7 @@ public class ThingContainer : MonoBehaviour, IInteractable<ThingContainer>
 
     public void Push(Thing thing, Action<Thing, int> onItemRemoved, Combination combo)
     {
-        _thing = thing;
+        this.thing = thing;
         
         _cachedAction = onItemRemoved;
         _onItemRemoved.Register(_cachedAction);
@@ -62,26 +62,26 @@ public class ThingContainer : MonoBehaviour, IInteractable<ThingContainer>
             obj.SetActive(true);
         
         Combination comb = obj.AddComponent<Combination>();
-        comb.Ingrediants = combo.Ingrediants;
-        comb.CombinationName = combo.CombinationName;
+        comb.ingredients = combo.ingredients;
+        comb.recipeName = combo.recipeName;
 
-        _thing = comb;
+        this.thing = comb;
         obj.GetComponentInChildren<TextMeshProUGUI>().SetText(thing.Name());
     }
     
     
     public void OnInteract(PlayerInteraction controller)
     {
-        if(_thing == null )
+        if(thing == null )
             return;
         
         if(isNotPersistant && !obj.activeSelf) //Exception for not persistant
             return;
             
         
-        GameEvents.GamePlay.OnPlayerReceiveThing.Raise(controller, _thing);
+        GameEvents.GamePlay.OnPlayerReceiveThing.Raise(controller, thing);
 
-        _onItemRemoved.Raise(_thing, index);
+        _onItemRemoved.Raise(thing, index);
         _onItemRemoved.UnRegister(_cachedAction);
         
         if(isNotPersistant)
@@ -89,12 +89,12 @@ public class ThingContainer : MonoBehaviour, IInteractable<ThingContainer>
         
     }
 
-    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action a)
+    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action completed)
     {
        //Useless
     }
 
-    public void OnInteract(PlayerInteraction controller, CombinationName veg)
+    public void OnInteract(PlayerInteraction controller, RecipeName veg)
     {
         
     }

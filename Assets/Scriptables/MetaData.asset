@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5daec4655c944eb4aa611dcc69656125, type: 3}
   m_Name: MetaData
   m_EditorClassIdentifier: 
-  powerUpPercentage: 30
-  vegetableTotalNumber: 5
+  totalVegetables: 8
+  totalCombinations: 5
+  scoreForEachIngredient: 20
+  powerUpPercentage: 70
   playerLiveTime: 200
-  timeForEachIngredient: 30
-  TimeToChop: 3
-  customerLeaveScoreSubtractAmount: 20
+  timeForEachIngredient: 25
+  timeToChop: 3
+  customerLeaveScoreSubtractAmount: 10
   powerUpAddScore: 20
   powerUpAddSpeed: 2
   powerUpAddSpeedDuration: 5

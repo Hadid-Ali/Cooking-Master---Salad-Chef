@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class PowerUp : MonoBehaviour,IInteractable<PowerUp>
@@ -27,11 +24,11 @@ public class PowerUp : MonoBehaviour,IInteractable<PowerUp>
         
     }
 
-    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action Completed)
+    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action completed)
     {
     }
 
-    public void OnInteract(PlayerInteraction controller, CombinationName veg)
+    public void OnInteract(PlayerInteraction controller, RecipeName veg)
     {
         
     }

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -14,87 +11,101 @@ public class Customer : MonoBehaviour, IInteractable<Customer>
     [SerializeField] private Image timerImage;
     
     public CustomerState customerState = CustomerState.Idle;
-    public CombinationName requiredCombinationName;
+    public Combination requiredCombination;
     
-    private Action<Customer> OnCustomerOrderComplete;
+    private Action<Customer> _onCustomerOrderComplete;
+    public static Action<Customer,string> OnCustomerPlaceOrder;
     
     private float _currentTime;
     private float _waitTime;
     private bool _isAngry;
-    
 
-    public void Order(CombinationName c, float time, Action<Customer> onCustomerOrderComplete)
+    private Timer _timer;
+
+    public void Order(Combination c, float time, Action<Customer> onCustomerOrderComplete)
     {
         gameObject.SetActive(true);
+        _isAngry = false;
         
-        requiredCombinationName = c;
-        OnCustomerOrderComplete = onCustomerOrderComplete;
+        requiredCombination = c;
+        this._onCustomerOrderComplete = onCustomerOrderComplete;
         customerState = CustomerState.Waiting;
 
         _waitTime = time;
-        Timer.Instance.StartTimer(OnTimerComplete, OnTimerTick, time);
+        _timer = Timer.Instance.StartTimer(OnTimerComplete, OnTimerTick, time);
+        UpdateUI();
     }
 
-    
-    IEnumerator  OnOrderServed()
+    public void UpdateUI()
     {
-        text.SetText($"{requiredCombinationName} : {customerState}");
+        text.SetText($"{customerState} : {requiredCombination.recipeName}");
         
-        yield return new WaitForSeconds(2);
-        OnCustomerOrderComplete.Invoke(this);
+        string ingredients = requiredCombination.recipeName.ToString() + " \n";
+        for (int i = 0; i < requiredCombination.ingredients.Count; i++)
+            ingredients += $"{requiredCombination.ingredients[i]} \n";
+        
+        OnCustomerPlaceOrder?.Invoke(this,ingredients);
     }
+    
+
 
     private void OnTimerTick(float obj)
     {
-        if(customerState != CustomerState.Waiting)
-            return;
-        
         _currentTime = obj;
         
-        text.SetText($"{requiredCombinationName} : {customerState}");
         timerImage.fillAmount = _currentTime / 60;
+        timerImage.color = _isAngry?  Color.red : Color.white;
     }
 
     private void OnTimerComplete()
     {
-        OnCustomerOrderComplete.Invoke(this);
+        _timer = null;
         
-        PlayerScore.OnScoreSubAll?.Invoke(MetaDataUtility.metaData.customerLeaveScoreSubtractAmount);
+        _onCustomerOrderComplete.Invoke(this);
+        
+        PlayerScore.OnScoreSubAll?.Invoke(MetaDataUtility.MetaData.customerLeaveScoreSubtractAmount);
     }
 
-    private void EvaluateOrder(PlayerInteraction interaction,CombinationName combinationName)
+    private void EvaluateOrder(PlayerInteraction interaction, RecipeName recipeName)
     {
-        if (requiredCombinationName == combinationName)
+        if (requiredCombination.recipeName == recipeName)
         {
             customerState =  CustomerState.Served ;
             
-            if ((_currentTime / _waitTime * 100) >= MetaDataUtility.metaData.powerUpPercentage)
+            if ((_currentTime / _waitTime * 100) >= MetaDataUtility.MetaData.powerUpPercentage)
             {
                 SpawnPowerUp();
             }
+
+            int calculatedScore =
+                MetaDataUtility.MetaData.scoreForEachIngredient * requiredCombination.ingredients.Count;
             
-            PlayerScore.OnScoreAdd?.Invoke(interaction, 30);
-            print("Right Combo");
+            PlayerScore.OnScoreAdd?.Invoke(interaction, calculatedScore);
+            
+            text.SetText($"{customerState}");
+        
+            _timer = null;
+            _onCustomerOrderComplete.Invoke(this);
         }
         else if(!_isAngry) 
         {
             _isAngry = true;
+            customerState = CustomerState.Angry;
             PlayerScore.OnScoreSub?.Invoke(interaction, 10);
-            print("Wrong Combo");
+            _timer.DoubleTheSpeed();
+            text.SetText($"{customerState} : {requiredCombination.recipeName}");
         }
         else
         {
-            PlayerScore.OnScoreSub?.Invoke(interaction, 30);
-            print("Wrong Combo Angry");
+            PlayerScore.OnScoreSub?.Invoke(interaction, 15);
         }
         
-        if(customerState == CustomerState.Served)
-            StartCoroutine(OnOrderServed());
+        
     }
 
     public bool AllowsInteraction(PlayerInteraction controller)
     {
-        return customerState == CustomerState.Waiting ;
+        return customerState == CustomerState.Waiting || customerState == CustomerState.Angry;
     }
 
     private void SpawnPowerUp()
@@ -120,12 +131,12 @@ public class Customer : MonoBehaviour, IInteractable<Customer>
         
     }
 
-    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action Completed)
+    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action completed)
     {
         
     }
 
-    public void OnInteract(PlayerInteraction controller, CombinationName veg)
+    public void OnInteract(PlayerInteraction controller, RecipeName veg)
     {
         EvaluateOrder(controller, veg);
     }

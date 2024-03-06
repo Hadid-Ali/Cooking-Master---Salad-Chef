@@ -10,10 +10,12 @@ using Random = UnityEngine.Random;
 public class VegetableStock : Inventory
 {
     [SerializeField] private ThingContainer[] containers;
-
+    [SerializeField] private bool spawnRandom;
+    [SerializeField] private bool isFirstHalf;
+    
     private readonly Dictionary<ThingContainer, Thing> _stock = new Dictionary<ThingContainer, Thing>();
     private int _currentContainer;
-
+    
     protected override void Start()
     {
         base.Start();
@@ -31,8 +33,9 @@ public class VegetableStock : Inventory
 
     private void Populate(int containerIndex)
     {
-        int randomNumber = Random.Range(0, MetaDataUtility.metaData.vegetableTotalNumber);
+        var randomNumber = spawnRandom ? Random.Range(0, MetaDataUtility.MetaData.totalVegetables/2) : containerIndex; // Check if random Spawn or linear
         
+        randomNumber = isFirstHalf ? containerIndex : containerIndex + (MetaDataUtility.MetaData.totalVegetables / 2);
         Destroy(transform.GetComponent<Thing>());
         
         Vegetable veg = containers[containerIndex].gameObject.AddComponent<Vegetable>();
@@ -60,6 +63,5 @@ public class VegetableStock : Inventory
         
         RemoveThing(veg);
         Populate(containerIndex);
-        
     }
 }

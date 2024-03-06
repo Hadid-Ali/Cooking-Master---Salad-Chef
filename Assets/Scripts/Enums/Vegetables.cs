@@ -4,5 +4,8 @@
     IceBerg,
     Potato,
     Cabbage,
-    Pineapple
+    Pineapple,
+    Apple,
+    Banana,
+    Orange
 }

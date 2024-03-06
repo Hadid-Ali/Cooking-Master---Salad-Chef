@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    [SerializeField] private PlayerInventory _inventory;
-    [SerializeField] private CharacterInput _input;
-    [SerializeField] private PlayerScore _playerScore;
-    [SerializeField] private PlayerController _controller;
-    [SerializeField] private PlayerTimer _playerTimer;
+    [SerializeField] private PlayerInventory inventory;
+    [SerializeField] private CharacterInput input;
+    [SerializeField] private PlayerController controller;
+    [SerializeField] private PlayerTimer playerTimer;
     
     private IInteractable<SaladMachine> _saladMachine;
     private IInteractable<ThingContainer> _container;
@@ -70,53 +70,53 @@ public class PlayerInteraction : MonoBehaviour
             return;
         
 
-        if (_container != null && !_inventory.IsAtCapacity)
+        if (_container != null && !inventory.IsAtCapacity)
         {
             if(!_container.AllowsInteraction(this))
                 return;
             
             _container.OnInteract(this);
         }
-        else if (_saladMachine != null && !_inventory.IsEmpty)
+        else if (_saladMachine != null && !inventory.IsEmpty)
         {
             if(!_saladMachine.AllowsInteraction(this))
                 return;
                 
-            _veg = _inventory.GetTopVegetable();
+            _veg = inventory.GetTopVegetable();
             
 
             if(_veg == null)
                 return;
             
             _saladMachine.OnInteract(this, _veg, SaladMachineInteractionComplete);
-            _input.PauseInput();
+            input.PauseInput();
         }
-        else if (_customer != null && !_inventory.IsEmpty)
+        else if (_customer != null && !inventory.IsEmpty)
         {
             if(!_customer.AllowsInteraction(this))
                 return;
             
-            _comb = _inventory.GetTopMostCombination();
+            _comb = inventory.GetTopMostCombination();
             
             
             if(_comb == null)
                 return;
             
-            _customer.OnInteract(this, _comb.CombinationName);
-            _inventory.RemoveThing(_comb);
+            _customer.OnInteract(this, _comb.recipeName);
+            inventory.RemoveThing(_comb);
         }
         else if (_powerUp != null)
         {
             switch (_powerUp.OnInteract())
             {
                 case PowerupType.AddScore:
-                    PlayerScore.OnScoreAdd?.Invoke(this, MetaDataUtility.metaData.powerUpAddScore);
+                    PlayerScore.OnScoreAdd?.Invoke(this, MetaDataUtility.MetaData.powerUpAddScore);
                     break;
                 case PowerupType.TimeIncrease:
-                    _playerTimer.Addtimer(MetaDataUtility.metaData.powerUpAddTime);
+                    playerTimer.Addtimer(MetaDataUtility.MetaData.powerUpAddTime);
                     break;
                 case PowerupType.MoveSpeed:
-                    _controller.AddSpeed(MetaDataUtility.metaData.powerUpAddSpeed, MetaDataUtility.metaData.powerUpAddSpeedDuration);
+                    controller.AddSpeed(MetaDataUtility.MetaData.powerUpAddSpeed, MetaDataUtility.MetaData.powerUpAddSpeedDuration);
                     break;
             }
 
@@ -133,10 +133,10 @@ public class PlayerInteraction : MonoBehaviour
 
     public void RemoveCombination()
     {
-        Thing thing = _inventory.GetTopMostCombination();
+        Thing thing = inventory.GetTopMostCombination();
             
         if(thing != null)
-            _inventory.RemoveThing(thing);
+            inventory.RemoveThing(thing);
     }
     
 
@@ -144,8 +144,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void SaladMachineInteractionComplete()
     {
-        _inventory.RemoveThing(_veg);
-        _input.ContinueInput();
+        inventory.RemoveThing(_veg);
+        input.ContinueInput();
     }
 
     IEnumerator WaitCoroutine()

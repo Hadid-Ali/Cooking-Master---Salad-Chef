@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
+
 
 public class MetaDataUtility : MonoBehaviour
 {
-    [SerializeField] private List<CombinationData> combinations;
+    [SerializeField] private List<Recipe> recipes;
     [SerializeField] private MetaData metaDataS;
 
-    private static List<CombinationData> _staticCombinations;
-    public static MetaData metaData;
+    public static List<Recipe> Recipes;
+    public static MetaData MetaData;
     private void Awake()
     {
-        _staticCombinations = combinations;
-        metaData = metaDataS;
+        Recipes = recipes;
+        MetaData = metaDataS;
         
         DontDestroyOnLoad(this);
         SortLists();
@@ -22,22 +20,22 @@ public class MetaDataUtility : MonoBehaviour
 
     public static void SortLists()
     {
-        foreach (var v in _staticCombinations)
+        foreach (var v in Recipes)
         {
-            v.Combination.Sort();
+            v.vegetables.Sort();
         }
     }
 
-    public static CombinationName CheckCombination(List<VegetableName> vegetables)
+    public static RecipeName CheckCombination(List<VegetableName> vegetables)
     {
         vegetables.Sort();
-        foreach (var v in _staticCombinations)
+        foreach (var v in Recipes)
         {
-            if (IsSame(v.Combination, vegetables))
-                return v.Name;
+            if (IsSame(v.vegetables, vegetables))
+                return v.recipeName;
         }
 
-        return CombinationName.None;
+        return RecipeName.None;
     } 
     private static bool IsSame(List<VegetableName> A, List<VegetableName> B)
     {

@@ -1,7 +1,7 @@
-﻿
-public enum CustomerState 
+﻿public enum CustomerState 
 {
     Idle,
     Waiting,
-    Served
+    Served,
+    Angry
 }

@@ -621,6 +621,8 @@ MonoBehaviour:
   - {fileID: 964652610}
   - {fileID: 1144535359}
   - {fileID: 643018940}
+  spawnRandom: 0
+  isFirstHalf: 1
 --- !u!65 &157992290
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1021,11 +1023,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6f6f6814948581408fb18cf70a76e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventory: {fileID: 368782404}
-  _input: {fileID: 368782408}
-  _playerScore: {fileID: 368782415}
-  _controller: {fileID: 368782410}
-  _playerTimer: {fileID: 368782416}
+  inventory: {fileID: 368782404}
+  input: {fileID: 368782408}
+  controller: {fileID: 368782410}
+  playerTimer: {fileID: 368782416}
 --- !u!143 &368782407
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1146,9 +1147,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387f770467bbf33458f4a970a4272c71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Controller: {fileID: 368782407}
-  m_Input: {fileID: 368782408}
-  m_Intereactor: {fileID: 368782406}
+  controller: {fileID: 368782407}
+  input: {fileID: 368782408}
+  interactor: {fileID: 368782406}
   playerSpeed: 5
 --- !u!136 &368782411
 CapsuleCollider:
@@ -1255,10 +1256,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80a63430bab094e45b4e4bd6a59c7700, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeBar: {fileID: 1897522200}
-  _input: {fileID: 368782408}
-  _playerScore: {fileID: 368782415}
-  playerName: 
+  timeBar: {fileID: 1897522200}
+  input: {fileID: 368782408}
+  playerScore: {fileID: 368782415}
+  playerName: Player2
 --- !u!1 &371091273
 GameObject:
   m_ObjectHideFlags: 0
@@ -1298,7 +1299,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &371091275
 BoxCollider:
@@ -1570,6 +1571,8 @@ MonoBehaviour:
   - {fileID: 1709577075}
   - {fileID: 1514584395}
   - {fileID: 916073134}
+  spawnRandom: 0
+  isFirstHalf: 0
 --- !u!65 &502386797
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1683,7 +1686,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0.0017700195, y: 0}
-  m_SizeDelta: {x: 640.01416, y: 322.17358}
+  m_SizeDelta: {x: 640.01416, y: 366.10876}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &514466931
 MonoBehaviour:
@@ -1704,8 +1707,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "    Combo1  : Carrot + iceberg\n   Combo2 :  Carrot + lettude\r\n Combo3
-    : Carrot + potato"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
   m_sharedMaterial: {fileID: 2140474, guid: 8a89fa14b10d46a99122fd4f73fca9a2, type: 2}
@@ -1733,10 +1735,10 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
@@ -1774,13 +1776,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 514466931}
-    characterCount: 87
+    characterCount: 0
     spriteCount: 0
-    spaceCount: 24
-    wordCount: 10
+    spaceCount: 0
+    wordCount: 0
     linkCount: 0
-    lineCount: 3
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -1923,7 +1925,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &643018941
 BoxCollider:
@@ -2177,8 +2179,9 @@ GameObject:
   - component: {fileID: 716791463}
   - component: {fileID: 716791465}
   - component: {fileID: 716791464}
+  - component: {fileID: 716791466}
   m_Layer: 5
-  m_Name: Hint
+  m_Name: Customers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2202,7 +2205,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 640.0106, y: 172.57971}
+  m_SizeDelta: {x: 640.0106, y: 366.10876}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &716791464
 MonoBehaviour:
@@ -2241,6 +2244,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 716791462}
   m_CullTransparentMesh: 0
+--- !u!114 &716791466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716791462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e093f7af20968174598f4c400ccc9416, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 514466931}
+  customer1: {fileID: 1250015064}
+  customer2: {fileID: 1077353506}
 --- !u!1 &717114355
 GameObject:
   m_ObjectHideFlags: 0
@@ -2565,7 +2583,6 @@ MonoBehaviour:
   customers:
   - {fileID: 1250015064}
   - {fileID: 1077353506}
-  TimeForEachIngrediant: 0
 --- !u!1 &818641744
 GameObject:
   m_ObjectHideFlags: 0
@@ -2945,7 +2962,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &916073135
 BoxCollider:
@@ -3061,7 +3078,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &964652611
 BoxCollider:
@@ -3183,7 +3200,7 @@ GameObject:
   - component: {fileID: 1077353507}
   - component: {fileID: 1077353506}
   m_Layer: 0
-  m_Name: Capsule (1)
+  m_Name: Customer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3219,7 +3236,7 @@ MonoBehaviour:
   text: {fileID: 2014383249}
   timerImage: {fileID: 1986795106}
   customerState: 0
-  requiredCombinationName: 0
+  requiredCombination: {fileID: 0}
 --- !u!65 &1077353507
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3399,10 +3416,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0776e00ce483043499b2a46b556ce3b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combinations:
-  - {fileID: 11400000, guid: 1e3384c5ee1312644ad6952c5f941f0b, type: 2}
-  - {fileID: 11400000, guid: d8dad7eb34976704abcbed1c9ee71adc, type: 2}
-  - {fileID: 11400000, guid: b65e7b2d23ec7884b9e292080f67c263, type: 2}
+  recipes:
+  - {fileID: 11400000, guid: 75fe52a3fe647734395cdb1e60f28822, type: 2}
+  - {fileID: 11400000, guid: fac7d5f8831f5ba4b95ef80d103ec626, type: 2}
+  - {fileID: 11400000, guid: 6dfdb80c14d4cb349a9d5a3fe6d310dd, type: 2}
+  - {fileID: 11400000, guid: e12dc2b5790d9c64d923a5c431a29a10, type: 2}
+  - {fileID: 11400000, guid: d3c778da1499bc74aa67a4ae97bea9d5, type: 2}
   metaDataS: {fileID: 11400000, guid: 7dd587fe7ef0afd49926f6a1ce655536, type: 2}
 --- !u!4 &1113345692
 Transform:
@@ -3537,7 +3556,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &1144535360
 BoxCollider:
@@ -3882,7 +3901,7 @@ GameObject:
   - component: {fileID: 1250015065}
   - component: {fileID: 1250015064}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Customer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3918,7 +3937,7 @@ MonoBehaviour:
   text: {fileID: 1803559513}
   timerImage: {fileID: 331482458}
   customerState: 0
-  requiredCombinationName: 0
+  requiredCombination: {fileID: 0}
 --- !u!65 &1250015065
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4019,9 +4038,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387f770467bbf33458f4a970a4272c71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Controller: {fileID: 1253221578}
-  m_Input: {fileID: 1253221576}
-  m_Intereactor: {fileID: 1253221580}
+  controller: {fileID: 1253221578}
+  input: {fileID: 1253221576}
+  interactor: {fileID: 1253221580}
   playerSpeed: 5
 --- !u!136 &1253221572
 CapsuleCollider:
@@ -4237,11 +4256,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6f6f6814948581408fb18cf70a76e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventory: {fileID: 1253221579}
-  _input: {fileID: 1253221576}
-  _playerScore: {fileID: 1253221582}
-  _controller: {fileID: 1253221571}
-  _playerTimer: {fileID: 1253221583}
+  inventory: {fileID: 1253221579}
+  input: {fileID: 1253221576}
+  controller: {fileID: 1253221571}
+  playerTimer: {fileID: 1253221583}
 --- !u!54 &1253221581
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4286,10 +4304,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80a63430bab094e45b4e4bd6a59c7700, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeBar: {fileID: 1964971180}
-  _input: {fileID: 1253221576}
-  _playerScore: {fileID: 1253221582}
-  playerName: 
+  timeBar: {fileID: 1964971180}
+  input: {fileID: 1253221576}
+  playerScore: {fileID: 1253221582}
+  playerName: Player1
 --- !u!1 &1272730283
 GameObject:
   m_ObjectHideFlags: 0
@@ -4336,10 +4354,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e05b0b46b7443345af26bab78793900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 368782406}
+  owner: {fileID: 368782406}
   thingContainer: {fileID: 1825846478}
-  _image: {fileID: 1992532000}
-  _currentCombination: {fileID: 0}
+  image: {fileID: 1992532000}
+  currentCombination: {fileID: 0}
 --- !u!65 &1272730286
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4638,7 +4656,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 19143569}
-  _button: {fileID: 68169173}
+  button: {fileID: 68169173}
 --- !u!1 &1369729785
 GameObject:
   m_ObjectHideFlags: 0
@@ -4841,10 +4859,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e05b0b46b7443345af26bab78793900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 1253221580}
+  owner: {fileID: 1253221580}
   thingContainer: {fileID: 1963094829}
-  _image: {fileID: 682362656}
-  _currentCombination: {fileID: 0}
+  image: {fileID: 682362656}
+  currentCombination: {fileID: 0}
 --- !u!65 &1370918020
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5162,7 +5180,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &1514584396
 BoxCollider:
@@ -6055,7 +6073,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &1709577076
 BoxCollider:
@@ -6419,10 +6437,10 @@ MonoBehaviour:
   owners:
   - {fileID: 368782406}
   visualObjectPrefab: {fileID: 0}
-  spawnPoint: {fileID: 0}
+  spawnPoint: {fileID: 41098192}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 1
 --- !u!65 &1825846479
 BoxCollider:
@@ -6538,7 +6556,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 0
 --- !u!65 &1839904846
 BoxCollider:
@@ -6925,10 +6943,10 @@ MonoBehaviour:
   owners:
   - {fileID: 1253221580}
   visualObjectPrefab: {fileID: 0}
-  spawnPoint: {fileID: 0}
+  spawnPoint: {fileID: 851588048}
   obj: {fileID: 0}
   index: 0
-  _thing: {fileID: 0}
+  thing: {fileID: 0}
   isNotPersistant: 1
 --- !u!65 &1963094830
 BoxCollider:

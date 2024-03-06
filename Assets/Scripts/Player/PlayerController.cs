@@ -1,38 +1,34 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private CharacterController m_Controller;
-    [SerializeField] private CharacterInput m_Input;
-    [SerializeField] private PlayerInteraction m_Intereactor;
+    [SerializeField] private CharacterController controller;
+    [SerializeField] private CharacterInput input;
+    [SerializeField] private PlayerInteraction interactor;
     
     [SerializeField] private float playerSpeed = 2.0f;
     
-    private Vector3 m_move;
-    private float defaultSpeed;
+    private Vector3 _move;
+    private float _defaultSpeed;
     
     private void Awake()
     {
-        m_Input.Initialize(OnMove, OnInteract);
-        defaultSpeed = playerSpeed;
+        input.Initialize(OnMove, OnInteract);
+        _defaultSpeed = playerSpeed;
     }
 
     void Update()
     {
-        if (m_move != Vector3.zero) gameObject.transform.forward = m_move;
+        if (_move != Vector3.zero) gameObject.transform.forward = _move;
         
-        m_Controller.Move(Vector3.down);
-        m_Controller.Move(m_move * Time.deltaTime * playerSpeed);
+        controller.Move(Vector3.down);
+        controller.Move(_move * Time.deltaTime * playerSpeed);
     }
 
     public void OnMove(Vector2 move)
     {
-         m_move = new Vector3(move.x, 0, move.y);
+         _move = new Vector3(move.x, 0, move.y);
     }
 
     public void AddSpeed(float speed, float duration)
@@ -43,12 +39,12 @@ public class PlayerController : MonoBehaviour
 
     public void ResetSpeed()
     {
-        playerSpeed = defaultSpeed;
+        playerSpeed = _defaultSpeed;
     }
 
     public void OnInteract()
     {
-        m_Intereactor.Interact();
+        interactor.Interact();
     }
 }
 

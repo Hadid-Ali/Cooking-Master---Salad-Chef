@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d57a2aab832bad84794ba2e2e45840ff, type: 3}
-  m_Name: Salad3
+  m_Name: Recipe5
   m_EditorClassIdentifier: 
-  Name: Salad3
-  vegetables: 000000000700000002000000
+  recipeName: 5
+  vegetables: 01000000020000000500000006000000

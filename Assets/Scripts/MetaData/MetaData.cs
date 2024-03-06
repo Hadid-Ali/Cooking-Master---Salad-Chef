@@ -4,11 +4,14 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(fileName = "MetaData", menuName = "ScriptableObjects/MetaData", order = 3)]
 public class MetaData : ScriptableObject
 {
+    public int totalVegetables ;
+    public int totalCombinations ;
+    public int scoreForEachIngredient;
+    
     public float powerUpPercentage;
-    public int vegetableTotalNumber ;
     public float playerLiveTime;
     public float timeForEachIngredient;
-    public float TimeToChop;
+    public float timeToChop;
     public int customerLeaveScoreSubtractAmount;
     public int powerUpAddScore;
     public float powerUpAddSpeed;

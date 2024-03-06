@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TrashCan : MonoBehaviour,IInteractable<TrashCan>
@@ -16,12 +14,12 @@ public class TrashCan : MonoBehaviour,IInteractable<TrashCan>
         controller.RemoveCombination();
     }
 
-    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action Completed)
+    public void OnInteract(PlayerInteraction controller, Vegetable veg, Action completed)
     {
         throw new NotImplementedException();
     }
 
-    public void OnInteract(PlayerInteraction controller, CombinationName veg)
+    public void OnInteract(PlayerInteraction controller, RecipeName veg)
     {
         throw new NotImplementedException();
     }

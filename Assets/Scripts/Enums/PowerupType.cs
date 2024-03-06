@@ -1,5 +1,4 @@
-﻿
-public enum PowerupType 
+﻿public enum PowerupType 
 {
     MoveSpeed,
     TimeIncrease,

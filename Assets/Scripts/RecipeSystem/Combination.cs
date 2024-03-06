@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Combination : Thing
 {
-    public List<VegetableName> Ingrediants = new List<VegetableName>();
-    public CombinationName CombinationName;
+    public List<VegetableName> ingredients = new List<VegetableName>();
+    [FormerlySerializedAs("CombinationName")] public RecipeName recipeName;
     
     protected override void Start()
     {
@@ -16,13 +17,13 @@ public class Combination : Thing
     {
         Combination comb = thing.GetItem<Combination>();
         
-        CombinationName = comb.CombinationName;
-        Ingrediants = comb.Ingrediants;
+        recipeName = comb.recipeName;
+        ingredients = comb.ingredients;
     }
 
     public override string Name()
     {
-        return CombinationName.ToString();
+        return recipeName.ToString();
     }
 
     public override T GetItem<T>()

@@ -8,12 +8,13 @@ public class Timer : MonoBehaviour
     private static Timer _instance; 
     private static List<Timer> timers = new List<Timer>(); 
 
-    private float timerDuration; 
-    private float timerElapsed; 
-    private Action<float> onTimerUpdate; 
-    private Action onTimerEnd; 
-    private Coroutine timerCoroutine;
-
+    [SerializeField] private float timerDuration; 
+    [SerializeField] private float timerElapsed; 
+    [SerializeField] private bool doubleSpeed = false;
+    private Action<float> _onTimerUpdate; 
+    private Action _onTimerEnd; 
+    private Coroutine _timerCoroutine;
+    
     private bool _isTicking;
     
 
@@ -43,9 +44,10 @@ public class Timer : MonoBehaviour
         }
         
         newTimer.timerDuration = duration;
-        newTimer.onTimerUpdate = onTimerUpdate;
-        newTimer.onTimerEnd = onTimerEnd;
-        newTimer.timerCoroutine = newTimer.StartCoroutine(newTimer.TimerCoroutine());
+        newTimer._onTimerUpdate = onTimerUpdate;
+        newTimer._onTimerEnd = onTimerEnd;
+        newTimer.doubleSpeed = false;
+        newTimer._timerCoroutine = newTimer.StartCoroutine(newTimer.TimerCoroutine());
         return newTimer;
     }
 
@@ -56,15 +58,21 @@ public class Timer : MonoBehaviour
         while (timerElapsed > 0)
         {
             yield return null;
-            timerElapsed -= Time.deltaTime;
-            onTimerUpdate?.Invoke(timerElapsed);
+
+            timerElapsed -=  doubleSpeed? (Time.deltaTime + Time.deltaTime) : Time.deltaTime;
+            _onTimerUpdate?.Invoke(timerElapsed);
         }
 
-        onTimerEnd?.Invoke();
+        _onTimerEnd?.Invoke();
         
         _isTicking = false;
         timers.Remove(this);
         Destroy(this.gameObject);
+    }
+
+    public void DoubleTheSpeed()
+    {
+        doubleSpeed = true;
     }
 
 
@@ -72,10 +80,10 @@ public class Timer : MonoBehaviour
     {
         timerElapsed += additionalTime;
         
-        if (timerCoroutine != null)
+        if (_timerCoroutine != null)
         {
-            StopCoroutine(timerCoroutine);
-            timerCoroutine = StartCoroutine(TimerCoroutine());
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = StartCoroutine(TimerCoroutine());
         }
     }
     
